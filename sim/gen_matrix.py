@@ -8,12 +8,6 @@ from numpy import dtype, ndarray
 from scipy import sparse
 
 
-HEX_LABELS = [*list("0123456789ABCDEF")]
-
-def _grid4x4_nodes_labels():
-    """Returns nodes as strings: ['0','1',...,'9','A',...,'F']"""
-    return HEX_LABELS.copy()
-
 def _grid4x4_undirected_edges():
     """
     Returns undirected edges for the 4x4 grid as pairs of node indices (u,v), u < v.
