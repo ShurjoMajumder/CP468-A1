@@ -76,27 +76,14 @@ def weighted_directed_grid4x4(low=0.0, high=1.0, seed=None) -> sparse.csr_matrix
     return sparse.csr_matrix(A)
 
 
-# --- 3) Convenience: Graphviz (python graphviz) emission ---
-
-def add_to_graphviz(digraph: Digraph, nodes, edges, weight_fmt="{:.3f}"):
-    """
-    Adds nodes and directed edges to a graphviz.Digraph instance.
-    edges: list[(src_label, dst_label, weight_float)]
-    """
-    for n in nodes:
-        digraph.node(n)
-    for u, v, w in edges:
-        digraph.edge(u, v, label=weight_fmt.format(w))
-    return digraph
-
-
 # --- Example ---
 if __name__ == "__main__":
     A = weighted_directed_grid4x4(seed=42)
     G = nx.from_scipy_sparse_array(A, create_using=nx.DiGraph, edge_attribute="weight")
+    layout = nx.layout.spring_layout(G)
+    ipx.network(G, layout=layout, show=True)
     print(A)
     print(G)
-    nx.draw_networkx(G, with_labels=True, pos=nx.spring_layout(G), arrows=True)
     # print("Nodes:", A.get)
     # print("First 10 directed edges:", edges[:10])
     # print("Adjacency matrix shape:", A.shape)
