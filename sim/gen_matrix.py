@@ -4,7 +4,6 @@ import numpy as np
 import networkx as nx
 import iplotx as ipx
 
-from graphviz import Digraph
 from numpy import dtype, ndarray
 from scipy import sparse
 
