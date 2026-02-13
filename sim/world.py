@@ -11,7 +11,7 @@ class World(object):
         self._street_graph = gen_matrix.weighted_directed_grid4x4(seed=42)
         self.parking_lot_locs: np.ndarray = np.array([0, 0, 0], dtype=np.int64)
         for i in range(len(self.parking_lot_locs)):
-            self.parking_lot_locs[i] = np.random.choice(np.arange(16, dtype=np.int64))
+            self.parking_lot_locs[i] = np.random.choice(np.arange(1, 16, dtype=np.int64))
 
     def draw_street_graph(self):
         G = nx.from_scipy_sparse_array(self._street_graph, create_using=nx.DiGraph, edge_attribute="weight")
