@@ -11,7 +11,8 @@ class Agent(object):
         self.destination: int = 15
 
     def find_lot(self, A: csr_matrix):
-        Tcsr = sparse.csgraph.breadth_first_order()
+        # Tcsr = sparse.csgraph.breadth_first_order()
+        ...
 
     def step(self):
         ...
