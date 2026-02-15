@@ -34,17 +34,19 @@ def _grid4x4_undirected_edges():
 
 def weighted_directed_grid4x4(low=0.0, high=1.0, seed=None) -> sparse.csr_matrix:
     """
-    Produces a directed weighted adjacency for the grid:
+    Produces a directed weighted and unweighted adjacency for the grid:
       - For every undirected neighbor pair {u,v}, creates TWO directed edges u->v and v->u
       - Weights are in (low, high) open interval (default (0,1))
     :param low: lower bound
     :param high: upper bound
     :param seed: random seed
+    :return: Two directed graphs, one with weights and one without.
     """
     rng = np.random.default_rng(seed)
 
     if not (low < high):
         raise ValueError("Require low < high.")
+
     # draw strictly inside ]low, high[
     def draw_weight():
         # rng.random() is in [0,1[; this maps to [low, high[ (practically open on floats)
@@ -56,28 +58,27 @@ def weighted_directed_grid4x4(low=0.0, high=1.0, seed=None) -> sparse.csr_matrix
 
     undirected = _grid4x4_undirected_edges()
 
-    A: ndarray[tuple[int, int], dtype[np.float64]] = np.zeros((16, 16), dtype=np.float64)
+    weighted_graph: ndarray[tuple[int, int], dtype[np.float64]] = np.zeros((16, 16), dtype=np.float64)
 
+    # add edges
     for u, v in undirected:
         w_uv = draw_weight()
         w_vu = draw_weight()
 
-        A[u, v] = w_uv
-        A[v, u] = w_vu
+        weighted_graph[u, v] = w_uv
+        weighted_graph[v, u] = w_vu
 
-    np.fill_diagonal(A, 0.0)
+    # empty diagonals, just in case
+    np.fill_diagonal(weighted_graph, 0.0)
 
-    return sparse.csr_matrix(A)
+    return sparse.csr_matrix(weighted_graph)
 
 
-# --- Example ---
+# === Example ===
 if __name__ == "__main__":
     A = weighted_directed_grid4x4(seed=42)
     G = nx.from_scipy_sparse_array(A, create_using=nx.DiGraph, edge_attribute="weight")
-    layout = nx.layout.spring_layout(G)
-    ipx.network(G, layout=layout, show=True)
     print(A)
     print(G)
-    # print("Nodes:", A.get)
-    # print("First 10 directed edges:", edges[:10])
-    # print("Adjacency matrix shape:", A.shape)
+    layout = nx.layout.spring_layout(G)
+    ipx.network(G, layout=layout, show=True)
